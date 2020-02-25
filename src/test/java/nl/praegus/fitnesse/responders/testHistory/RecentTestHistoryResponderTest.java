@@ -2,12 +2,13 @@ package nl.praegus.fitnesse.responders.testHistory;
 import org.junit.Test;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class TestHistoryRecentTest {
+public class RecentTestHistoryResponderTest {
 
     @Test
     public void when_directory_is_null_the_history_lines_are_empty() {
@@ -39,15 +40,16 @@ public class TestHistoryRecentTest {
     }
 
     @Test
-    public void When_dateTimeFormatter_is_not_working_correctly(){
+    public void checks_if_correct_date_is_shown() {
         RecentTestHistory recentTestHistory = new RecentTestHistory(getMockDir("TestResultDirectory"));
-        String expectedNotEqual = "Wed Jan 22 11:43:40 CET 2020";
-        String expectedContains = "nl.praegus.fitnesse.responders.testHistory.TestHistoryLine@";
 
-        String receivedResult = recentTestHistory.getHistoryLines().toString();
+        SimpleDateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        isoFormat.setTimeZone(TimeZone.getDefault());
 
-        assertThat(receivedResult).isNotEqualTo(expectedNotEqual);
-        assertThat(receivedResult).contains(expectedContains);
+        LocalDateTime expectedResult = LocalDateTime.parse("2020-01-22T11:43:40");
+
+        LocalDateTime receivedResult = recentTestHistory.getHistoryLines().get(0).getMostRecentRunDate();
+        assertThat(receivedResult).isEqualTo(expectedResult);
     }
 
     @Test
@@ -72,7 +74,6 @@ public class TestHistoryRecentTest {
     private File getMockDir(String DirName){
             File mockDir = new File(getClass().getClassLoader().getResource(DirName).getFile());
             return mockDir;
-
     }
 
 }
