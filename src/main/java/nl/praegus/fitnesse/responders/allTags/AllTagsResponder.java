@@ -25,7 +25,7 @@ public class AllTagsResponder implements SecureResponder {
     }
 
     public SimpleResponse makeTagResponse(SourcePage sourcePage) throws UnsupportedEncodingException {
-        tagObject.put("Tags", getPageTags(sourcePage));
+        tagObject.put("Tags", getPageTags(sourcePage, new HashSet<>()));
 
         SimpleResponse response = new SimpleResponse();
         response.setMaxAge(0);
@@ -35,8 +35,19 @@ public class AllTagsResponder implements SecureResponder {
         return response;
     }
 
-    public List<String> getPageTags(SourcePage page){
-        return getPageTagsHelper(page, new ArrayList<>());
+    public Set<String> getPageTags(SourcePage page, Set<String> allTags){
+        String[] tags = page.getProperty(WikiPageProperty.SUITES).split("\\s*,\\s*");
+        for(String tag: tags) {
+            if (tag.length() > 0) {
+                allTags.add(tag);
+            }
+        }
+
+        for (SourcePage p : getSortedChildren(page)) {
+            getPageTags(p, allTags);
+        }
+
+        return allTags;
     }
 
     @Override
@@ -62,19 +73,5 @@ public class AllTagsResponder implements SecureResponder {
         return page;
     }
 
-    private List<String> getPageTagsHelper(SourcePage page, List<String> allTagsArray) {
-        String[] tags = page.getProperty(WikiPageProperty.SUITES).split(", ");
 
-        for(String tag: tags) {
-            if (tag.length() > 0 && !allTagsArray.contains(tag)) {
-                allTagsArray.add(tag);
-            }
-        }
-
-        for (SourcePage p : getSortedChildren(page)) {
-            getPageTagsHelper(p, allTagsArray);
-        }
-
-        return allTagsArray;
-    }
 }

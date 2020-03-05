@@ -1,10 +1,12 @@
 package nl.praegus.fitnesse.responders.allTags;
 
-import fitnesse.wiki.*;
+import fitnesse.wiki.WikiPage;
+import fitnesse.wiki.WikiPageDummy;
+import fitnesse.wiki.WikiPageProperty;
+import fitnesse.wiki.WikiSourcePage;
 import org.junit.Test;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -19,9 +21,9 @@ public class AllTagsResponderTest {
         TestWikiPageDummy testWikiPageDummy = new TestWikiPageDummy("dummyPage", "", new WikiPageDummy(), testTagProperty);
         WikiSourcePage testWikiSourcePage = new WikiSourcePage(testWikiPageDummy);
 
-        List<String> receivedValue = tagResponder.getPageTags(testWikiSourcePage);
+        Set<String> receivedValue = tagResponder.getPageTags(testWikiSourcePage, new HashSet<>());
 
-        assertThat(receivedValue).contains("testTag");
+        assertThat(receivedValue).isEqualTo(new HashSet<>(Collections.singletonList("testTag")));
     }
 
     /* getPageTags */
@@ -37,9 +39,9 @@ public class AllTagsResponderTest {
         TestWikiPageDummy testWikiPageDummy = new TestWikiPageDummy("dummyPage", "", new WikiPageDummy(), testTagPropertyMainSuite, children);
         WikiSourcePage testWikiSourcePage = new WikiSourcePage(testWikiPageDummy);
 
-        List<String> receivedValue = tagResponder.getPageTags(testWikiSourcePage);
+        Set<String> receivedValue = tagResponder.getPageTags(testWikiSourcePage, new HashSet<>());
 
-        assertThat(receivedValue).contains("mainTag", "childTag");
+        assertThat(receivedValue).isEqualTo(new HashSet<>(Arrays.asList("mainTag", "childTag")));
     }
 
     /* getPageTags */
@@ -53,9 +55,9 @@ public class AllTagsResponderTest {
         TestWikiPageDummy testWikiPageDummy = new TestWikiPageDummy("dummyPage", "", new WikiPageDummy(), testTagPropertyMainSuite, children);
         WikiSourcePage testWikiSourcePage = new WikiSourcePage(testWikiPageDummy);
 
-        List<String> receivedValue = tagResponder.getPageTags(testWikiSourcePage);
+        Set<String> receivedValue = tagResponder.getPageTags(testWikiSourcePage, new HashSet<>());
 
-        assertThat(receivedValue).contains("mainTag");
+        assertThat(receivedValue).isEqualTo(new HashSet<>(Collections.singletonList("mainTag")));
     }
 
     /* getPageTags */
@@ -65,7 +67,7 @@ public class AllTagsResponderTest {
         TestWikiPageDummy testWikiPageDummy = new TestWikiPageDummy("dummyPage", "", new WikiPageDummy(), new WikiPageProperty());
         WikiSourcePage testWikiSourcePage = new WikiSourcePage(testWikiPageDummy);
 
-        List<String> receivedValue = tagResponder.getPageTags(testWikiSourcePage);
+        Set<String> receivedValue = tagResponder.getPageTags(testWikiSourcePage, new HashSet<>());
 
         assertThat(receivedValue).isEmpty();
     }
