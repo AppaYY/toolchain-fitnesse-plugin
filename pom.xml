@@ -21,9 +21,9 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>nl.praegus</groupId>
+            <groupId>com.github.appayy</groupId>
             <artifactId>fitnesse-bootstrap-plus-theme</artifactId>
-            <version>BETA-SNAPSHOT</version>
+            <version>BETA-v1.01</version>
         </dependency>
         <dependency>
             <groupId>nl.praegus</groupId>
