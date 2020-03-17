@@ -13,6 +13,9 @@ import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.util.*;
+import java.util.stream.Collectors;
+
+import static nl.praegus.fitnesse.responders.WikiPageHelper.loadPage;
 
 public class AllTagsResponder implements SecureResponder {
     private JSONObject tagObject = new JSONObject();
@@ -25,7 +28,7 @@ public class AllTagsResponder implements SecureResponder {
     }
 
     public SimpleResponse makeTagResponse(SourcePage sourcePage) throws UnsupportedEncodingException {
-        tagObject.put("Tags", getPageTags(sourcePage, new HashSet<>()));
+        tagObject.put("Tags", getPageTags(sourcePage));
 
         SimpleResponse response = new SimpleResponse();
         response.setMaxAge(0);
@@ -35,19 +38,20 @@ public class AllTagsResponder implements SecureResponder {
         return response;
     }
 
-    public Set<String> getPageTags(SourcePage page, Set<String> allTags){
-        String[] tags = page.getProperty(WikiPageProperty.SUITES).split("\\s*,\\s*");
-        for(String tag: tags) {
-            if (tag.length() > 0) {
-                allTags.add(tag);
-            }
+    public Set<String> getPageTags(SourcePage page){
+        return getPageTagsHelper(page, new HashSet<>());
+    }
+
+    private Set<String> getPageTagsHelper(SourcePage page, Set<String> allTagsArray) {
+        String[] tags = page.getProperty(WikiPageProperty.SUITES).split(", ");
+
+        allTagsArray.addAll(Arrays.stream(tags).filter(t -> t.length() > 0).collect(Collectors.toList()));
+
+        for (SourcePage p : getPageChildren(page)) {
+            getPageTagsHelper(p, allTagsArray);
         }
 
-        for (SourcePage p : getSortedChildren(page)) {
-            getPageTags(p, allTags);
-        }
-
-        return allTags;
+        return allTagsArray;
     }
 
     @Override
@@ -55,22 +59,8 @@ public class AllTagsResponder implements SecureResponder {
         return new SecureReadOperation();
     }
 
-    private List<SourcePage> getSortedChildren(SourcePage parent) {
-        List<SourcePage> result = new ArrayList<>(parent.getChildren());
-        Collections.sort(result);
-        return result;
-    }
-
-    private WikiPage loadPage(FitNesseContext context, String pageName, Map<String, String> inputs) {
-        WikiPage page;
-        if (RecentChanges.RECENT_CHANGES.equals(pageName)) {
-            page = context.recentChanges.toWikiPage(context.getRootPage());
-        } else {
-            WikiPagePath path = PathParser.parse(pageName);
-            PageCrawler crawler = context.getRootPage(inputs).getPageCrawler();
-            page = crawler.getPage(path);
-        }
-        return page;
+    private List<SourcePage> getPageChildren(SourcePage parent) {
+        return new ArrayList<>(parent.getChildren());
     }
 
 
