@@ -6,12 +6,7 @@ import fitnesse.plugins.PluginFeatureFactoryBase;
 import fitnesse.responders.ResponderFactory;
 import fitnesse.testsystems.slim.tables.SlimTable;
 import fitnesse.testsystems.slim.tables.SlimTableFactory;
-import nl.praegus.fitnesse.responders.AutoCompleteResponder;
-import nl.praegus.fitnesse.responders.MavenProjectVersionsResponder;
-import nl.praegus.fitnesse.responders.UpdateTagsResponder;
-import nl.praegus.fitnesse.responders.TableOfContentsResponder;
-import nl.praegus.fitnesse.responders.testHistory.RecentTestHistoryResponder;
-import nl.praegus.fitnesse.responders.allTags.AllTagsResponder;
+import nl.praegus.fitnesse.responders.*;
 import nl.praegus.fitnesse.slim.tables.ConditionalScenarioTable;
 import nl.praegus.fitnesse.slim.tables.ConditionalScriptTable;
 import nl.praegus.fitnesse.slim.tables.LoopingScenarioTable;
@@ -52,6 +47,8 @@ public class PraegusPluginFeatureFactory extends PluginFeatureFactoryBase {
         add(responderFactory, "recentTestHistory", RecentTestHistoryResponder.class);
         LOG.info("[Toolchain Plugin] Registering AllTagsResponder (?allTags).");
         add(responderFactory, "allTags", AllTagsResponder.class);
+        LOG.info("[Toolchain Plugin] Registering TooltipResponder (?Tooltips).");
+        add(responderFactory, "Tooltips", TooltipResponder.class);
     }
 
     private void add(ResponderFactory factory, String key, Class<? extends Responder> responder) {
