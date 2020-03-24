@@ -17,13 +17,13 @@
         <dependency>
             <groupId>org.fitnesse</groupId>
             <artifactId>fitnesse</artifactId>
-            <version>20200108</version>
+            <version>20200308</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.github.appayy</groupId>
             <artifactId>fitnesse-bootstrap-plus-theme</artifactId>
-            <version>BETA-v1.01</version>
+            <version>BETA-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>nl.praegus</groupId>

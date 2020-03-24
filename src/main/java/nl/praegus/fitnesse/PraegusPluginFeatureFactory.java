@@ -6,9 +6,14 @@ import fitnesse.plugins.PluginFeatureFactoryBase;
 import fitnesse.responders.ResponderFactory;
 import fitnesse.testsystems.slim.tables.SlimTable;
 import fitnesse.testsystems.slim.tables.SlimTableFactory;
-import nl.praegus.fitnesse.responders.*;
-import nl.praegus.fitnesse.responders.allTags.*;
-import nl.praegus.fitnesse.responders.testHistory.*;
+import fitnesse.wikitext.parser.SymbolProvider;
+import nl.praegus.fitnesse.decorators.TableSymbolDecorator;
+import nl.praegus.fitnesse.responders.AutoCompleteResponder;
+import nl.praegus.fitnesse.responders.MavenProjectVersionsResponder;
+import nl.praegus.fitnesse.responders.UpdateTagsResponder;
+import nl.praegus.fitnesse.responders.TableOfContentsResponder;
+import nl.praegus.fitnesse.responders.testHistory.RecentTestHistoryResponder;
+import nl.praegus.fitnesse.responders.allTags.AllTagsResponder;
 import nl.praegus.fitnesse.responders.ToolTip.*;
 import nl.praegus.fitnesse.slim.tables.ConditionalScenarioTable;
 import nl.praegus.fitnesse.slim.tables.ConditionalScriptTable;
@@ -33,6 +38,12 @@ public class PraegusPluginFeatureFactory extends PluginFeatureFactoryBase {
 
     private void add(SlimTableFactory factory, String key, Class<? extends SlimTable> tableType) {
         factory.addTableType(key, tableType);
+    }
+
+    @Override
+    public void registerSymbolTypes(SymbolProvider symbolProvider) {
+        LOG.info("[Toolchain Plugin] Registering table specific css decorator classes.");
+        TableSymbolDecorator.install();
     }
 
     @Override
